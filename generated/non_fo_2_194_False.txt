@@ -1,0 +1,9 @@
+QueryCreationException : The query R[PK_CST(c), PK(x0), x1] AND S[PK(x1), x0] is not FO-rewritable
+QueryCreationException : The query R[PK_CST(c), PK(x0), x1] AND S[PK(x2), x1] is not FO-rewritable
+QueryCreationException : The query R[PK(x0), PK(x0), x1] AND S[PK(x1), x0] is not FO-rewritable
+QueryCreationException : The query R[PK(x0), PK(x0), x1] AND S[PK(x2), x1] is not FO-rewritable
+QueryCreationException : The query R[PK(x0), PK_CST(c), x1] AND S[PK(x1), x0] is not FO-rewritable
+QueryCreationException : The query R[PK(x0), PK_CST(c), x1] AND S[PK(x2), x1] is not FO-rewritable
+QueryCreationException : The query R[PK(x0), PK(x1), x2] AND S[PK(x2), x0] is not FO-rewritable
+QueryCreationException : The query R[PK(x0), PK(x1), x2] AND S[PK(x2), x1] is not FO-rewritable
+QueryCreationException : The query R[PK(x0), PK(x1), x2] AND S[PK(x3), x2] is not FO-rewritable

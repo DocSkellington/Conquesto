@@ -1,0 +1,17 @@
+*.pyc
+*.log
+*.aux
+*.bcf
+*.blg
+*.out
+*.xml
+*.md5
+*.toc
+*.idx
+*.ilg
+*.ind
+*.bbl
+
+.mypy_cache/
+.vscode/
+__pycache__/

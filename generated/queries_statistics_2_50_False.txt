@@ -1,0 +1,4 @@
+Len 50
+Total 52
+FO 50
+Rejected 2
