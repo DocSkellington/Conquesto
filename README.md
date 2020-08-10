@@ -135,5 +135,5 @@ The columns are filled with zero in this case, but they should not be considered
   * Jef Wijsen
 
 ## License
-_Conquesto_ is distributed under the BSD-3 license.
+_Conquesto_ is distributed under the BSD-3-Clause license.
 See [LICENSE](LICENSE) for more information.
