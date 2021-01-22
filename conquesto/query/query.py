@@ -52,6 +52,9 @@ class Variable:
     def __str__(self) -> str:
         return f"%s"%self.name
 
+    def __repr__(self) -> str:
+        return str(self)
+
     def __eq__(self, other) -> bool:
         return isinstance(other, type(self)) and self.name.upper() == other.name.upper()
 
@@ -71,6 +74,9 @@ class Prim_Key(Variable):
     def __str__(self) -> str:
         return f"PK(%s)"%self.name
 
+    def __repr__(self) -> str:
+        return str(self)
+
 class Constant(Variable):
     '''
     Constant class
@@ -80,6 +86,9 @@ class Constant(Variable):
     
     def __str__(self) -> str:
         return f"CST(%s)"%self.name
+
+    def __repr__(self) -> str:
+        return str(self)
 
     def to_ASP(self) -> str:
         return self.name.lower()
@@ -98,6 +107,9 @@ class PrimaryConstant(Prim_Key, Constant):
     def __str__(self) -> str:
         return f"PK_CST(%s)"%self.name
 
+    def __repr__(self) -> str:
+        return str(self)
+
     def to_ASP(self) -> str:
         return self.name.lower()
 
@@ -111,6 +123,9 @@ class Atom:
 
     def __str__(self) -> str:
         return self.name + "[" + ", ".join(map(str, self.variables)) + "]"
+        
+    def __repr__(self) -> str:
+        return str(self)
 
     def to_ASP(self) -> str:
         return self.name.lower() + "(" + ", ".join(map(lambda x: x.to_ASP(), self.variables)) + ")"
@@ -488,6 +503,7 @@ class Query:
         tree = fo_rewriting.fo_rewriting(self)
         if tree is None:
             return False
+        print(tree.to_ASP("alpha_1"))
         f.write(tree.to_ASP("alpha_1") + "\n" + ":- not alpha_1_1.")
         return True
 

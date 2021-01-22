@@ -18,6 +18,11 @@ class PrimaryKeyConstraint(namedtuple("PrimaryKeyConstraint", ["primary", "secon
     def __str__(self) -> str:
         return "(" + ", ".join(map(str, self.primary)) + ") -> " + str(self.secondary)
 
+
+    def __repr__(self) -> str:
+        return str(self)
+
+
 class PrimaryKeyConstraintsSet:
     '''
     A set with all primary key constraints.
@@ -43,7 +48,7 @@ class PrimaryKeyConstraintsSet:
 
     def satisfies(self, constraint: PrimaryKeyConstraint) -> bool:
         '''
-        Does this set always satisfied the given constraint?
+        Does this set always satisfy the given constraint?
         '''
         primary, secondary = constraint
 
