@@ -83,6 +83,9 @@ def launch_program(
 
     :param f_code: The file where the code of the program is contained
     :param f_db: The file where the db code is contained
+    :param program: The program to use
+    :param time_limit: The maximal time allowed
+    :param parallel_mode: The number of CPU cores to use (only for clingo; 0 disables parallel mode)
     :return: The CPU time taken by the program to stop
     '''
     timeout= False
@@ -99,7 +102,6 @@ def launch_program(
             for line in result_file:
                 if "CPU Time" in line:
                     values["cpu_time"] = float(''.join(c for c in line if (c.isdigit() or c == '.')))
-                    print(values["cpu_time"])
                 elif "Choices" in line:
                     values["choices"] = int(''.join(c for c in line if c.isdigit()))
                 elif "Rules" in line:

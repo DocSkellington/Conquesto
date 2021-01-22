@@ -503,7 +503,6 @@ class Query:
         tree = fo_rewriting.fo_rewriting(self)
         if tree is None:
             return False
-        print(tree.to_ASP("alpha_1"))
         f.write(tree.to_ASP("alpha_1") + "\n" + ":- not alpha_1_1.")
         return True
 

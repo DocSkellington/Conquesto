@@ -75,7 +75,6 @@ class Node(ABC):
         :return: The part of an ASP body with atoms to make sure every variable is safe.
         '''
         s = ""
-        at_least_one = False
 
         # We need to first iterate over the atoms to be able to remove the variables from the set
         for for_safe_atom in for_safe_variables:
@@ -85,20 +84,34 @@ class Node(ABC):
                 contains_var = len(list(filter(lambda v: v.name == unsafe_var.name, for_safe_atom.pure_variables))) != 0
                 if contains_var:
                     break
-            # If it is useful, we add it in the string
+            # If it is useful, we can use it to make some variables safe
             if contains_var:
-                if at_least_one:
-                    s += ", "
-                s += for_safe_atom.to_ASP()
-                at_least_one = True
-                # And we remove the variables of this atom from the unsafe set
-                for var in for_safe_atom.pure_variables:
-                    if var in unsafe_variables:
-                        unsafe_variables.remove(var)
-
-        # For compatibility with the rest of the code
-        if at_least_one:
-            s += ", "
+                # In order to properly make the variables safe, we create new atoms
+                # Each atom is a copy of the current useful atom where all the variables' names are changed except for one of the unsafe variables
+                # For instance, if the atom R[X, Y, Z] can be used to make the variables [X, Z] safe, we create two new atoms
+                # R[X, YYY_0_1, ZZZ_0_2]
+                # R[XXX_1_0, YYY_1_1, Z]
+                for i, variable in enumerate(for_safe_atom.variables):
+                    # If the current variable is already safe, we skip it
+                    if variable not in unsafe_variables:
+                        continue
+                    variables: List[query.Variable] = []
+                    unsafe_variables.remove(variable) # We mark the variable as being safe
+                    for j, var in enumerate(for_safe_atom.variables):
+                        if i == j:
+                            # We are at the variable we want to make safe
+                            variables += [variable]
+                        elif isinstance(var, query.Constant):
+                            # We do not change constants
+                            variables += [var]
+                        else:
+                            # We change the variable's name
+                            new_var = copy.copy(var)
+                            new_var.name = (3 * var.name) + "_{}_{}".format(i, j)
+                            variables += [new_var]
+                    # Now that we have all the variables' names, we can create the atom and convert it to ASP
+                    new_atom = query.Atom(for_safe_atom.name, variables)
+                    s += new_atom.to_ASP() + ", "
 
         return s
 
