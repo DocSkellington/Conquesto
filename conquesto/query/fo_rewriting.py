@@ -91,13 +91,13 @@ class Node(ABC):
                 # For instance, if the atom R[X, Y, Z] can be used to make the variables [X, Z] safe, we create two new atoms
                 # R[X, YYY_0_1, ZZZ_0_2]
                 # R[XXX_1_0, YYY_1_1, Z]
-                for i, variable in enumerate(for_safe_atom.variables):
+                for i, variable in enumerate(for_safe_atom.primary_variables_as_non_primary() + for_safe_atom.secondary_variables):
                     # If the current variable is already safe, we skip it
                     if variable not in unsafe_variables:
                         continue
                     variables: List[query.Variable] = []
                     unsafe_variables.remove(variable) # We mark the variable as being safe
-                    for j, var in enumerate(for_safe_atom.variables):
+                    for j, var in enumerate(for_safe_atom.primary_variables_as_non_primary() + for_safe_atom.secondary_variables):
                         if i == j:
                             # We are at the variable we want to make safe
                             variables += [variable]

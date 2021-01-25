@@ -133,10 +133,9 @@ class Atom:
     @property
     def pure_variables(self) -> Set[Variable]:
         '''
-        Gets all variables as instances of Variable.
+        Gets the set of variables as instances of Variable.
 
-        That is, the primary key aspect is ignored.
-        However, constants are removed
+        That is, the primary key aspect is ignored and constants are removed
         '''
         s : Set[Variable] = set()
         for x in self.variables:
