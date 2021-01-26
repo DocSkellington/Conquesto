@@ -529,20 +529,20 @@ if __name__ == "__main__":
     
     timelimit = 100
 
-    program = statistics.Program.DLV.value.lower()
+    program = statistics.Program.CLINGO.value.lower() + "_cardinality"
 
     n_queries = 194
 
     fixed_database_size = False
     min_n = 40
-    max_n = 70
+    max_n = 50
 
     table_number = 2
 
     queries = load_queries("generated/queries_{}_{}_{}.pickle".format(table_number, n_queries, fixed_database_size))
 
     datasets : List[Tuple[statistics.Description, statistics.Dataset]] = []
-    for db_type in [statistics.DatabaseType.YES]:
+    for db_type in [statistics.DatabaseType.NO]:
         if fixed_database_size:
             description, dataset = load_dataset("generated/dataset_fixed_{}_{}_{}_{}_{}_{}_{}.txt".format(program, db_type.value, table_number, fixed_database_size, max_n, len(queries), timelimit))
         else:
