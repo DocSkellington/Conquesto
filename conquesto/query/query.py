@@ -29,7 +29,7 @@ class QueryCreationException(Exception):
                                else None
 
     def __str__(self) -> str:
-        return f"QueryCreationException : %s"%self.message if self.message is not None\
+        return f"%s"%self.message if self.message is not None\
                else "QueryCreationException has been raised"
 
 class Variable:
@@ -797,8 +797,6 @@ class Query:
         :return: The query without the atom (but with free variables)
         '''
         atoms_to_keep = list(filter(lambda x: atom.name != x.name, self.atoms))
-        # variables_in_other_atoms = set([var for x in self.atoms for var in x.variables if x != atom])
-        # free_variables = set(atom.variables).union(self.free_variables).intersection(variables_in_other_atoms)
         free_variables = set(atom.pure_variables).union(self.free_variables)
         new_query = Query(self.table_number - 1, self.variables, list(free_variables), [x.variables for x in atoms_to_keep], table_names=[x.name for x in atoms_to_keep])
         return new_query

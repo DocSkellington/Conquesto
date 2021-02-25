@@ -82,6 +82,7 @@ class AttackGraph:
     '''
     def __init__(self, q : query.Query):
         self.query = q
+        self.free_variables = set(q.free_variables)
         self.atoms : List[query.Atom] = q.atoms
         self.attacks : Dict[query.Atom, Set[query.Atom]] = defaultdict(set)
         for atom in self.atoms:
@@ -99,22 +100,26 @@ class AttackGraph:
         s = "; ".join(map(lambda s: s[0].name + " attacks " + ", ".join(map(lambda x: x.name, s[1])), self.attacks.items()))
         return s
 
-    def _compute_attacks_from(self, atom):
+    def _compute_attacks_from(self, atom: query.Atom):
         '''
         Computes every attack from the given atom
         '''
         F = self._compute_F(atom)
+        atom_variables = atom.pure_variables.difference(self.free_variables)
         for a in self.atoms:
             if a != atom:
-                attacking_vars = a.pure_variables.intersection(atom.pure_variables).difference(F)
+                a_variables = a.pure_variables.difference(self.free_variables)
+                attacking_vars = a_variables.intersection(atom_variables).difference(F)
                 if len(attacking_vars) != 0:
                     self.attacks[atom].add(a)
                     self._compute_attacks_from_recursive(atom, F, a, set([atom, a]))
 
     def _compute_attacks_from_recursive(self, start: query.Atom, F: Set[query.Variable], previous: query.Atom, visited: Set[query.Atom]):
+        previous_variables = previous.pure_variables.difference(self.free_variables)
         for a in self.atoms:
             if a not in visited:
-                attacking_vars = a.pure_variables.intersection(previous.pure_variables).difference(F)
+                a_variables = a.pure_variables.difference(self.free_variables)
+                attacking_vars = a_variables.intersection(previous_variables).difference(F)
                 if len(attacking_vars) != 0:
                     self.attacks[start].add(a)
                     self._compute_attacks_from_recursive(start, F, a, visited.union(set([a])))
@@ -130,7 +135,7 @@ class AttackGraph:
 
         primary_atom = removed_atom.primary_variables_as_non_primary()
         F : Set[query.Variable] = set()
-        variables = self.query.pure_variables
+        variables = self.query.pure_variables.difference(self.free_variables)
         for x in variables:
             if primary_key_constraints.satisfies(PrimaryKeyConstraint(primary_atom, x)):
                 F.add(x)

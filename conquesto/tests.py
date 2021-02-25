@@ -73,6 +73,30 @@ class Tests(unittest.TestCase):
         with self.subTest(str(q) + ", special db"):
             self.run_query_on_database(q, ["r(1, 2, 111)", "s(2, 3, 4)"], True)
 
+    
+    def test_free_variables(self):
+        xPrim = query.query.Prim_Key("x")
+        yPrim = query.query.Prim_Key("y")
+        zPrim = query.query.Prim_Key("z")
+        
+        x = query.query.Variable("x")
+        y = query.query.Variable("y")
+        z = query.query.Variable("z")
+
+        # If we remove r_3 without putting its variables as free variables, the query is not in FO
+        # Otherwise, q is in FO
+        q = query.query.Query(5, [xPrim, yPrim, zPrim, x, y, z], [], 
+            [[xPrim, y], [yPrim, x], [xPrim, z], [zPrim, x],[yPrim, z]], 
+            table_names = ['r_0', 'r_1', 'r_2', 'r_3', 'r_4'])
+
+        self.assertTrue(q.is_fo_rewritable())
+
+        with self.assertRaises(query.query.QueryCreationException):
+            query.query.Query(4, [xPrim, yPrim, zPrim, x, y, z], [], [[xPrim, y], [yPrim, x], [xPrim, z],[yPrim, z]], table_names = ['r_0', 'r_1', 'r_2', 'r_4'], check_query=True)
+
+        q_prime = q.remove_atom(query.query.Atom("r_3", [zPrim, x]))
+        self.assertTrue(q_prime.is_fo_rewritable())
+
 
 if __name__ == "__main__":
     unittest.main()
