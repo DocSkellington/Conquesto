@@ -74,7 +74,7 @@ class Tests(unittest.TestCase):
             self.run_query_on_database(q, ["r(1, 2, 111)", "s(2, 3, 4)"], True)
 
     
-    def test_free_variables(self):
+    def test_whole_in_fo_but_subquery_not_in_fo(self):
         xPrim = query.query.Prim_Key("x")
         yPrim = query.query.Prim_Key("y")
         zPrim = query.query.Prim_Key("z")
@@ -96,6 +96,38 @@ class Tests(unittest.TestCase):
 
         q_prime = q.remove_atom(query.query.Atom("r_3", [zPrim, x]))
         self.assertTrue(q_prime.is_fo_rewritable())
+
+    
+    def test_complicated_but_fo(self):
+        x0Prim = query.query.Prim_Key("x_0")
+        x1Prim = query.query.Prim_Key("x_1")
+        x2Prim = query.query.Prim_Key("x_2")
+        x3Prim = query.query.Prim_Key("x_3")
+        x4Prim = query.query.Prim_Key("x_4")
+        
+        x0 = query.query.Variable("x_0")
+        x1 = query.query.Variable("x_1")
+        x2 = query.query.Variable("x_2")
+        x3 = query.query.Variable("x_3")
+        x4 = query.query.Variable("x_4")
+
+        q = query.query.Query(9, [x0Prim, x1Prim, x2Prim, x3Prim, x4Prim, x0, x1, x2, x3, x4], [], 
+            [   [x1Prim, x0], 
+                [x0Prim, x2], 
+                [x0Prim, x3],
+                [x4Prim, x0],
+                [x1Prim, x2],
+                [x3Prim, x1],
+                [x4Prim, x1],
+                [x2Prim, x4],
+                [x3Prim, x4]
+            ], 
+            table_names = ['r_0', 'r_1', 'r_2', 'r_3', 'r_4', 'r_5', 'r_6', 'r_7', 'r_8'])
+        self.assertTrue(q.is_fo_rewritable())
+
+        ag = query.attack_graph.AttackGraph(q)
+        self.assertEqual(len(ag.unattacked_atoms), 1)
+        q.remove_atom(ag.unattacked_atoms[0])
 
 
 if __name__ == "__main__":

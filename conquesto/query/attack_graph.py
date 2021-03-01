@@ -35,20 +35,24 @@ class PrimaryKeyConstraintsSet:
     def __str__(self) -> str:
         return "{" + ", ".join(map(str, self.constraints)) + "}"
 
-    def add_from_atom(self, atom : query.Atom):
+    def add_from_atom(self, atom : query.Atom, free_variables: List[query.Variable]):
         primary = atom.primary_variables_as_non_primary()
         if len(primary) > 0:
             secondary = atom.secondary_variables
             # If primary is composed of only constants, then the actual primary key is the empty set
-            primary_without_constants = tuple(filter(lambda var: not isinstance(var, query.Constant), primary))
+            # Since free variables are considered as constants, we also remove them
+            primary_without_constants = tuple(filter(lambda var: not isinstance(var, query.Constant) and var not in free_variables, primary))
+            secondary_without_constants = tuple(filter(lambda var: not isinstance(var, query.Constant) and var not in free_variables, secondary))
 
             # We want only constraints of shape (x, y, z, ...) -> w
-            for var in secondary:
+            for var in secondary_without_constants:
                 self.constraints.add(PrimaryKeyConstraint(primary_without_constants, var))
 
     def satisfies(self, constraint: PrimaryKeyConstraint) -> bool:
         '''
         Does this set always satisfy the given constraint?
+
+        We assume the free variables and constants are already removed from the constraint
         '''
         primary, secondary = constraint
 
@@ -131,7 +135,7 @@ class AttackGraph:
         atoms = [a for a in self.atoms if a != removed_atom]
         primary_key_constraints = PrimaryKeyConstraintsSet()
         for atom in atoms:
-            primary_key_constraints.add_from_atom(atom)
+            primary_key_constraints.add_from_atom(atom, self.free_variables)
 
         primary_atom = removed_atom.primary_variables_as_non_primary()
         F : Set[query.Variable] = set()
