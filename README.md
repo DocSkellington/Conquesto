@@ -2,7 +2,7 @@
 _Conquesto_ is a program used to compare the performance between two algorithms for the problem of __CERTAINTY(q)__, with q a conjunctive query.
 
 This README assumes the reader is familiar with __CERTAINTY(q)__.
-More details are given in our paper (TODO : put the link).
+More details are given in our paper "Optimization of Answer Set Programs for Consistent Query Answering by Means of First-Order Rewriting" (https://dl.acm.org/doi/abs/10.1145/3340531.3411911).
 
 ## Description
 _Conquesto_ generates every possible conjunctive query over a fixed schema, such that each query is unique and can be rewritten in first-order logic.
